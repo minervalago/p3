@@ -1,0 +1,5 @@
+package e1;
+
+public enum razonParado {
+    HUNDIDO, REPARACION, DAÑO, DAÑOMASIVO, REMODELACION, DESMANTELAMIENTO, CAPTURADO
+}
