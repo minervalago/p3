@@ -18,4 +18,10 @@ public class BuqueInactivo extends Buque{
     public razonParado getRazonParado() {
         return razonParado;
     }
+    public void setCosteRepa(double costeRepa) {
+        this.costeRepa = costeRepa;
+    }
+    public double getCosteRepa() {
+        return costeRepa*peso;
+    }
 }
