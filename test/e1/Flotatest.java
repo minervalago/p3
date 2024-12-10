@@ -33,7 +33,7 @@ public class Flotatest {
 
     @BeforeEach
     public void setUp() {
-        flota = new Flota(500); //Dinero que tiene al principio
+        flota = new Flota(5000); //Dinero que tiene al principio
         acorazado = new Acorazados("Acorazado", "Parado");
         buqueInactivo = new BuqueInactivo(acorazado, razonParado.DAÑO);
         crucerosLigeros = new CrucerosLigeros("CrucerosLigero", "Navegacion");
@@ -75,6 +75,8 @@ public class Flotatest {
         assertTrue(flota.getBuqueact().contains(buqueInactivo1));
         flota.retirarBuque(buqueInactivo1);
         assertFalse(flota.getBuqueinact().contains(buqueInactivo1));
+
+        assertFalse(flota.getBuqueinact().contains(buqueInactivo));
     }
 
     @Test
@@ -84,128 +86,47 @@ public class Flotatest {
         flota.añadirBuque(buqueInactivo);
         assertTrue(flota.BuqueEnRepa());
     }
-    /*@Test
-    public void HacerRepaTest(){ //Probandolo para UltraLigeros, falta probar para el resto(si tenemos dinero para costear la reforma)
-        assertFalse(flota.hacerRepa(buqueInactivo1));
-        flota=new Flota(2300);
-        assertTrue(flota.hacerRepa(buqueInactivo1)); //Falla
-        assertEquals("Reparacion", buqueInactivo1.getEstado());
-    }*/
-    /*@Test AAAAAAAAAAAAA
-    public void HacerRepaTest() {
-        buqueInactivo2.setEstado("Parado"); // Configurar estado inicial.
 
-        // Reparación para UltraLigeros.
-        boolean reparacionExitosa = flota.hacerRepa(buqueInactivo2);
-        assertTrue(reparacionExitosa, "La reparación no se inició para un buque UltraLigeros.");
-        assertEquals("Reparacion", buqueInactivo2.getEstado(), "El estado no se actualizó a Reparacion.");
-    }*/
     @Test
     public void HacerRepaTest() {
-        // Crear un buque inactivo con tipo "UltraLigeros" y estado "Parado".
-        buqueInactivo2 = new BuqueInactivo("Buque1", "UltraLigeros", "Parado", 1.0, 100.0, 200.0, razonParado.DAÑOMASIVO);
+        buqueInactivo.setEstado("Navegacion");
+        boolean reparacionExi = flota.hacerRepa(buqueInactivo);
+        assertFalse(reparacionExi);
+        assertEquals("Navegacion",buqueInactivo.getEstado());
 
-        // Crear una flota con suficiente dinero para reparar.
+        buqueInactivo2 = new BuqueInactivo("Destructores", "UltraLigeros", "Parado", 1.0, 100.0, 200.0, razonParado.DAÑOMASIVO);
+        flota.añadirBuque(buqueInactivo2);
+        boolean reparacionExitosa = flota.hacerRepa(buqueInactivo2);
+        assertTrue(reparacionExitosa);
+        assertEquals("Reparacion", buqueInactivo2.getEstado());
+
+        BuqueInactivo buqueInactivo4 = new BuqueInactivo("Portaaviones","Pesado","Parado",1.0,100.0,200.0, razonParado.DAÑOMASIVO);
+        flota.añadirBuque(buqueInactivo4);
+        System.out.println("Estado actual del buque antes de hacerRepa: " + buqueInactivo.getEstado());
+        boolean reparacionExit = flota.hacerRepa(buqueInactivo4);
+        assertTrue(reparacionExit);
+        assertEquals("Reparacion", buqueInactivo4.getEstado());
+        assertEquals(4900.0,flota.getDinero(),0.01); //Verifica el dinero que queda después de la reparación
+    }
+    @Test
+    public void cancelarRepaTest() {
+        buqueInactivo2 = new BuqueInactivo("DestructoresDeEscolta", "UltraLigeros", "Parado", 1.0, 100.0, 200.0, razonParado.DAÑOMASIVO);
         flota = new Flota(500.0);
-
-        // Añadir el buque a la flota.
         flota.añadirBuque(buqueInactivo2);
-
-        // Intentar iniciar la reparación.
         boolean reparacionExitosa = flota.hacerRepa(buqueInactivo2);
+        assertTrue(reparacionExitosa);
+        assertEquals("Reparacion", buqueInactivo2.getEstado());
 
-        // Verificar que la reparación fue exitosa.
-        assertTrue(reparacionExitosa, "La reparación no se inició para un buque UltraLigeros.");
-        assertEquals("Reparacion", buqueInactivo2.getEstado(), "El estado no se actualizó a Reparacion.");
-    }
-    /*@Test
-    public void HacerRepaTest() {
-        flota.añadirBuque(buqueInactivo2);
-        buqueInactivo2.setEstado("Parado");
-        System.out.println("Estado inicial: " + buqueInactivo2.getEstado());
-        System.out.println("Tipo de buque: " + buqueInactivo2.getTipo());
-        System.out.println("BuqueEnRepa antes: " + flota.BuqueEnRepa());
-
-        boolean reparacionExitosa = flota.hacerRepa(buqueInactivo2);
-        System.out.println("Reparación exitosa: " + reparacionExitosa);
-        System.out.println("Estado después: " + buqueInactivo2.getEstado());
-
-        assertTrue(reparacionExitosa, "La reparación no se inició para un buque UltraLigeros.");
-        assertEquals("Reparacion", buqueInactivo2.getEstado(), "El estado no se actualizó a Reparacion.");
-    }*/
-
-    /*@Test
-    public void HacerRepaTest() {
-        // Configurar estado inicial del buque
-        buqueInactivo2.setEstado("Parado");
-
-        // Asegurar que es UltraLigeros
-        assertEquals("Ultraligeros", buqueInactivo2.getTipo(), "El buque no es del tipo UltraLigeros.");
-
-        // Crear flota
-        flota = new Flota(500); // Dinero inicial bajo, pero no relevante para UltraLigeros
-
-        // Intentar reparar
-        boolean reparacionExitosa = flota.hacerRepa(buqueInactivo2);
-        assertTrue(reparacionExitosa, "La reparación no se inició para un buque UltraLigeros.");
-        assertEquals("Reparacion", buqueInactivo2.getEstado(), "El estado no se actualizó a Reparacion.");
-    }*/
-
-    /*@Test
-    public void cancelarRepaTest(){
-        flota.hacerRepa(buqueInactivo2);
-        assertEquals("Reparacion", buqueInactivo2.getEstado()); //Falla
-        assertTrue(flota.cancelarRepa(buqueInactivo2));
-        assertEquals("PendienteRepa", buqueInactivo2.getEstado());
-        assertFalse(flota.cancelarRepa(buqueInactivo1));
-    }*/
-    /*@Test
-    public void cancelarRepaTest() {
-        flota.añadirBuque(buqueInactivo2);
-        flota.hacerRepa(buqueInactivo2);
-
-        assertEquals("Reparacion", buqueInactivo2.getEstado(), "El estado inicial no es Reparacion.");
         boolean cancelacionExitosa = flota.cancelarRepa(buqueInactivo2);
-        assertTrue(cancelacionExitosa, "La reparación no se pudo cancelar.");
-        assertEquals("Pendiente de Reparacion", buqueInactivo2.getEstado(), "El estado no se actualizó tras cancelar.");
-    }*/
-    @Test
-    public void cancelarRepaTest() {
-        // Configurar el buque y la flota.
-        buqueInactivo2 = new BuqueInactivo("Buque1", "UltraLigeros", "Parado", 1.0, 100.0, 200.0, razonParado.DAÑOMASIVO);
-        flota = new Flota(500.0); // Dinero suficiente para la reparación.
+        assertTrue(cancelacionExitosa);
+        assertEquals("Pendiente de Reparacion", buqueInactivo2.getEstado());
 
-        // Añadir el buque a la flota.
-        flota.añadirBuque(buqueInactivo2);
-
-        // Intentar iniciar la reparación.
-        boolean reparacionExitosa = flota.hacerRepa(buqueInactivo2);
-
-        // Verificar que la reparación fue exitosa.
-        assertTrue(reparacionExitosa, "La reparación no se inició correctamente.");
-        assertEquals("Reparacion", buqueInactivo2.getEstado(), "El estado inicial no es Reparacion.");
-
-        // Intentar cancelar la reparación.
-        boolean cancelacionExitosa = flota.cancelarRepa(buqueInactivo2);
-        assertTrue(cancelacionExitosa, "La reparación no se pudo cancelar.");
-        assertEquals("Pendiente de Reparacion", buqueInactivo2.getEstado(), "El estado no se actualizó tras cancelar.");
+        BuqueInactivo buqueNoReparacion=new BuqueInactivo("Portahidros","Ligeros ","Navegacion",1.0,100.0,200.0,razonParado.DAÑOMASIVO);
+        flota.añadirBuque(buqueNoReparacion);
+        boolean cancelacionNo=flota.cancelarRepa(buqueNoReparacion);
+        assertFalse(cancelacionNo);
+        assertEquals("Navegacion", buqueNoReparacion.getEstado());
     }
-
-    /*@Test
-    public void cancelarRepaTest() {
-        flota = new Flota(1000);
-        buqueInactivo2.setEstado("Parado");
-        flota.añadirBuque(buqueInactivo2);
-        assertEquals("Ultraligeros", buqueInactivo2.getTipo(), "El buque no es del tipo UltraLigeros.");
-        boolean reparacionExitosa = flota.hacerRepa(buqueInactivo2);
-        // Verificar que la reparación haya iniciado correctamente
-        assertTrue(reparacionExitosa, "La reparación no se inició."); //Falla
-        assertEquals("Reparacion", buqueInactivo2.getEstado(), "El estado del buque no se actualizó a Reparacion.");
-
-        // Cancelar reparación
-        assertTrue(flota.cancelarRepa(buqueInactivo2), "No se pudo cancelar la reparación.");
-        assertEquals("Pendiente de Reparacion", buqueInactivo2.getEstado(), "El estado no se actualizó correctamente tras cancelar.");
-    }*/
 
     @Test
     public void confirmarRepaTest() {
@@ -227,11 +148,19 @@ public class Flotatest {
         assertTrue(BuqueActivo1.EnEjercito());
         assertTrue(BuqueActivo2.EnEjercito());
         assertTrue(BuqueActivo3.EnEjercito());
+
+        flota.recompensaVuelta(BuqueActivo);
+        flota.recompensaVuelta(BuqueActivo1);
+        flota.recompensaVuelta(BuqueActivo2);
+        flota.recompensaVuelta(BuqueActivo3);
     }
 
     @Test
     public void HumdimientoTest(){
         assertNotEquals(buqueInactivo.getRazonParado(),razonParado.DAÑOMASIVO);
         assertEquals(buqueInactivo2.getRazonParado(),razonParado.DAÑOMASIVO);
+
+        flota.Hundimiento(buqueInactivo2);
+        assertEquals(buqueInactivo2.getEstado(), "Hundido");
     }
 }
